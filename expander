@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 
-REGISTRY_FILE="$HOME/.config/replacer/registry.json"
+REGISTRY_DIR="$HOME/.config/expander"
+REGISTRY_FILE="$REGISTRY_DIR/registry.json"
+
+mkdir -p "$REGISTRY_DIR"
+
+if [ ! -f "$REGISTRY_FILE" ]; then
+  echo "{}" > "$REGISTRY_FILE"
+fi
 
 CLIPBOARD_DATA=$(xclip -o -selection primary 2>/dev/null | sed 's/[[:space:]]*$//')
 
@@ -27,4 +34,3 @@ if [ -n "$OLD_CLIPBOARD" ]; then
 fi
 
 exit 0
-
