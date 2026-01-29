@@ -2,7 +2,7 @@
 
 REGISTRY_FILE="$HOME/.config/replacer/registry.json"
 
-CLIPBOARD_DATA=$(xclip -o -selection primary 2>/dev/null)
+CLIPBOARD_DATA=$(xclip -o -selection primary 2>/dev/null | sed 's/[[:space:]]*$//')
 
 if [ -z "$CLIPBOARD_DATA" ]; then
   exit 0
@@ -14,11 +14,17 @@ if [ -z "$VALUE" ]; then
   exit 0
 fi
 
+OLD_CLIPBOARD=$(xclip -o -selection clipboard 2>/dev/null)
+
 echo -n "$VALUE" | xclip -selection clipboard
 sleep 0.1
 
 xdotool key ctrl+v
+sleep 0.1
 
-# notify-send "Replaced $CLIPBOARD_DATA"
+if [ -n "$OLD_CLIPBOARD" ]; then
+  echo -n "$OLD_CLIPBOARD" | xclip -selection clipboard
+fi
 
 exit 0
+
