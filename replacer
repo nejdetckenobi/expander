@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+REGISTRY_FILE="$HOME/.config/replacer/registry.json"
+
+CLIPBOARD_DATA=$(xclip -o -selection primary 2>/dev/null)
+
+if [ -z "$CLIPBOARD_DATA" ]; then
+  exit 0
+fi
+
+VALUE=$(jq -r --arg key "$CLIPBOARD_DATA" '.[$key] // empty' "$REGISTRY_FILE")
+
+if [ -z "$VALUE" ]; then
+  exit 0
+fi
+
+echo -n "$VALUE" | xclip -selection clipboard
+sleep 0.1
+
+xdotool key ctrl+v
+
+# notify-send "Replaced $CLIPBOARD_DATA"
+
+exit 0
