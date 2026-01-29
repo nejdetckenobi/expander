@@ -79,7 +79,7 @@ A good default is:
 Reasons for this choice:
 - Easy to remember
 - Low risk of accidental triggering
-- Fits the explicit “select → expand” workflow
+- Fits the explicit “select - expand” workflow
 
 Bind this shortcut using your desktop environment, or a tool like `sxhkd` or `xbindkeys`.
 
