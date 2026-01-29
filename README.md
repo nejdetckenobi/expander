@@ -37,7 +37,17 @@ If there is no selection or no matching key, Expander exits without doing anythi
 
 Wayland is **not supported**.
 
-### Install Steps
+### Install via DEB package
+
+1. You can always install the deb package. The script will be under `/usr/bin/`
+
+2. Run it once to initialize configuration:
+   ```bash
+   expander
+   ```
+
+
+### Manual Install Steps
 
 1. Save the script somewhere in your `$PATH`, for example:
    ```bash
