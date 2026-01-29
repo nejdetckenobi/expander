@@ -1,0 +1,56 @@
+name: Build Debian Package
+
+on:
+  push:
+    tags:
+      - '*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-deb:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq xclip xdotool
+
+      - name: Prepare package structure
+        run: |
+          mkdir -p build/expander_${VERSION}/DEBIAN
+          mkdir -p build/expander_${VERSION}/usr/bin
+
+          cp expander build/expander_${VERSION}/usr/bin/expander
+          chmod 755 build/expander_${VERSION}/usr/bin/expander
+
+          cat > build/expander_${VERSION}/DEBIAN/control <<EOF
+          Package: expander
+          Version: ${VERSION}
+          Section: utils
+          Priority: optional
+          Architecture: all
+          Depends: bash, jq, xclip, xdotool
+          Maintainer: Expander Maintainers
+          Description: Minimal selection-based text expander for X11
+           Expander expands selected placeholders into predefined values
+           using an explicit keyboard shortcut.
+          EOF
+
+      - name: Build .deb package
+        run: |
+          dpkg-deb --build build/expander_${VERSION}
+          ls -lah build
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/expander_*.deb

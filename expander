@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-REGISTRY_DIR="$HOME/.config/expander"
+USER_HOME="${HOME:-$(getent passwd "$(id -u)" | cut -d: -f6)}"
+
+REGISTRY_DIR="$USER_HOME/.config/expander"
 REGISTRY_FILE="$REGISTRY_DIR/registry.json"
 
 mkdir -p "$REGISTRY_DIR"
@@ -10,12 +12,19 @@ if [ ! -f "$REGISTRY_FILE" ]; then
 fi
 
 CLIPBOARD_DATA=$(xclip -o -selection primary 2>/dev/null | sed 's/[[:space:]]*$//')
+sleep 0.1
+
+
+if [ -z "$CLIPBOARD_DATA" ]; then
+  CLIPBOARD_DATA=$(xclip -o -selection clipboard 2>/dev/null | sed 's/[[:space:]]*$//')
+fi
 
 if [ -z "$CLIPBOARD_DATA" ]; then
   exit 0
 fi
 
 VALUE=$(jq -r --arg key "$CLIPBOARD_DATA" '.[$key] // empty' "$REGISTRY_FILE")
+
 
 if [ -z "$VALUE" ]; then
   exit 0
@@ -27,6 +36,7 @@ echo -n "$VALUE" | xclip -selection clipboard
 sleep 0.1
 
 xdotool key ctrl+v
+
 sleep 0.1
 
 if [ -n "$OLD_CLIPBOARD" ]; then
