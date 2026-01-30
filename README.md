@@ -1,4 +1,4 @@
-# Expander
+# Expander [![Build Debian Package](https://github.com/nejdetckenobi/expander/actions/workflows/release.yml/badge.svg)](https://github.com/nejdetckenobi/expander/actions/workflows/release.yml)
 
 Expander is a minimal, selection-based text expansion utility for Linux (X11).
 
